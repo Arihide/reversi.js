@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Reversi</title>
+    <style>
+        html {
+            height: 100%;
+        }
+
+        body {
+            margin: 0px;
+            height: 100%;
+            background-color: #ffffff;
+            font-family: Monospace;
+        }
+
+        #reversi-start {
+            width: 100%;
+            max-width: 488px;
+            height: 50px;
+            border: 2px solid black;
+        }
+
+        .reversi-row {
+            display: flex;
+        }
+
+        .reversi-square {
+
+            width: 100%;
+            max-width: 60px;
+            margin: 1px;
+            background-color: green;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+        }
+
+        .reversi-square.bright {
+
+            background: gold;
+
+        }
+
+        .reversi-square::after {
+
+            content: "";
+            display: block;
+            padding-bottom: 100%;
+
+        }
+
+        .reversi-disc {
+            width: 90%;
+            height: 90%;
+            margin: 0 auto;
+            border-radius: 50%;
+        }
+
+        .black {
+            background: #000;
+        }
+
+        .white {
+            background: #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <script src='../build/reversi.min.js'></script>
+
+    <div id="reversi-container"></div>
+
+    <script>
+
+        var game = new Reversi.Game();
+        var player = new Reversi.HumanPlayer();
+
+        addEventListener('DOMContentLoaded', startGame);
+
+        function startGame() {
+
+            initBoard();
+
+            var prevLegalMoves;
+
+            game.addEventListener('startTurn', function (e) {
+
+
+                if (e.player.isHuman) {
+
+                    prevLegalMoves = game.board.legalMoves;
+
+                    for (let s of game.board.legalMoves) {
+
+                        document.getElementById(s).classList.add('bright');
+
+                    }
+
+                }
+
+
+
+            });
+
+            addEventListener('click', function (e) {
+
+                if (e.target.classList.contains('reversi-square')) {
+
+                    player.placeDisc(parseInt(e.target.id));
+
+                }
+
+            })
+
+            game.addEventListener('finishTurn', function (e) {
+
+                if (e.player.isHuman) {
+
+                    for (let s of prevLegalMoves) {
+
+                        document.getElementById(s).classList.remove('bright');
+
+                    }
+
+                }
+
+                if (e.move.place === Reversi.Pass) return;
+
+                let disc = document.createElement('div');
+                disc.classList.add('reversi-disc');
+                disc.classList.add(e.move.color === Reversi.Black ? 'black' : 'white');
+                document.getElementById(e.move.place).appendChild(disc);
+
+                for (let d of e.move.flip) {
+                    if (e.move.color === Reversi.Black) {
+                        document.getElementById(d).firstChild.classList.replace('white', 'black');
+                    } else {
+                        document.getElementById(d).firstChild.classList.replace('black', 'white');
+                    }
+                }
+
+            });
+
+            game.addEventListener('finishGame', function (e) {
+
+                alert('finish');
+
+            });
+
+            game.startGame(player, player);
+
+        }
+
+        function initBoard() {
+            var container = document.getElementById('reversi-container');
+
+            var row, square;
+            for (let i = 0; i < 8; i++) {
+
+                var row = document.createElement('div');
+                row.setAttribute('class', 'reversi-row');
+                container.appendChild(row)
+
+                for (let j = 0; j < 8; j++) {
+                    square = document.createElement('div');
+                    square.setAttribute('class', 'reversi-square');
+                    square.setAttribute('id', 8 * i + j);
+
+                    row.appendChild(square);
+                }
+            }
+
+            for (let s of [28, 35]) {
+                let disc = document.createElement('div');
+                disc.classList.add('reversi-disc');
+                disc.classList.add('black');
+                document.getElementById(s).appendChild(disc);
+            }
+            for (let s of [27, 36]) {
+                let disc = document.createElement('div');
+                disc.classList.add('reversi-disc');
+                disc.classList.add('white');
+                document.getElementById(s).appendChild(disc);
+            }
+        }
+
+
+    </script>
+</body>
+
+</html>

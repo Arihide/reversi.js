@@ -1,0 +1,23 @@
+{
+  "name": "reversi.js",
+  "version": "1.0.0",
+  "description": "javascript reversi engine",
+  "main": "index.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "build": "webpack",
+    "test": "test"
+  },
+  "author": "Arihide Takahashi",
+  "license": "MIT",
+  "dependencies": {
+    "webpack": "^3.10.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.0.0-beta.35",
+    "@babel/preset-env": "^7.0.0-beta.35",
+    "babel-loader": "^7.1.2"
+  }
+}

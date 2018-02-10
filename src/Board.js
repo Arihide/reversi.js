@@ -90,9 +90,11 @@ export default class Board {
 
         let move = this.playedMoves.pop();
 
-        if (move.square !== Pass) {
+        if (move === undefined) return undefined;
 
-            this.bitboard[move.color].xor(Data.BB_SQUARES[move.square]);
+        if (move.place !== Pass) {
+
+            this.bitboard[move.color].xor(Data.BB_SQUARES[move.place]);
             this.bitboard[Black].xor(move.bbflip);
             this.bitboard[White].xor(move.bbflip);
 
@@ -259,6 +261,7 @@ export default class Board {
             fliped.or(outflank);
 
             mask = masks2[i];
+
             mask.pureLeftShift(63 - square);
 
             // outflank.copy(mask).not();

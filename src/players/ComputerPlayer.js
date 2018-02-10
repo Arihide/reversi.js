@@ -8,13 +8,13 @@ export default class ComputerPlayer {
 
     startTurn(board, callback) {
 
-        setTimeout(this.computeMove, 0, board, callback);
+        setTimeout(this.computeMove.bind(this, board, callback), 0);
 
     }
 
-    compute(board, callback) {
+    computeMove(board, callback) {
 
-        throw new Error("Override 'compute' method");
+        throw new Error("You need to override 'compute' method");
 
     }
 

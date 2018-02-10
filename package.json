@@ -1,23 +1,24 @@
 {
   "name": "reversi.js",
   "version": "1.0.0",
-  "description": "javascript reversi engine",
+  "description": "JavaScript reversi library",
   "main": "index.js",
   "directories": {
-    "example": "examples"
+    "example": "examples",
+    "test": "test"
   },
   "scripts": {
     "build": "webpack",
-    "test": "test"
+    "test": "mocha --require babel-core/register"
   },
   "author": "Arihide Takahashi",
   "license": "MIT",
-  "dependencies": {
-    "webpack": "^3.10.0"
-  },
+  "repository": "github:Arihide/reversi.js",
   "devDependencies": {
     "@babel/core": "^7.0.0-beta.35",
     "@babel/preset-env": "^7.0.0-beta.35",
-    "babel-loader": "^7.1.2"
+    "babel-loader": "^7.1.2",
+    "mocha": "^4.0.1",
+    "webpack": "^3.10.0"
   }
 }

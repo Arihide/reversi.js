@@ -1,7 +1,7 @@
 import ComputerPlayer from './ComputerPlayer';
 import { Pass } from '../constants';
 
-export default class RandomComputerPlayer extends ComputerPlayer {
+export default class RandomPlayer extends ComputerPlayer {
 
     constructor() {
 

@@ -48,7 +48,7 @@ export default class Game extends EventDispatcher {
 
         if (board === undefined) {
             this.board.initialize();
-        }else{
+        } else {
             this.board = board;
         }
 
@@ -67,22 +67,23 @@ export default class Game extends EventDispatcher {
             return
         }
 
-        let move = this.board.popMove();
+        let move;
 
-        while (!this.players[move.color].isHuman || move.place === Pass) {
+        do {
+
+            move = this.board.popMove();
 
             if (move === undefined) {
-                return;
+                break;
             }
 
             this.dispatchEvent({ type: 'undo', move: move });
 
-            move = this.board.popMove();
-        }
+        } while (!this.players[move.color].isHuman || move.place === Pass)
 
-        this.dispatchEvent({ type: 'undo', move: move });
 
-        this.players[this.board.turn].startTurn(this.board);
+        this.players[this.board.turn].startTurn(this.board, this._doMoveAndChangeTurn.bind(this));
+        this.dispatchEvent({ type: 'startTurn', color: this.board.turn, player: this.players[this.board.turn] });
 
     }
 

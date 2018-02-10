@@ -238,7 +238,7 @@ var Bitop = function () {
     }, {
         key: "pureLeftShift",
         value: function pureLeftShift(n) {
-            if (n < 32) {
+            if (n === 0) {} else if (n < 32) {
                 this.p[0] = this.p[0] << n | this.p[1] >>> 32 - n;
                 this.p[1] = this.p[1] << n;
             } else {
@@ -250,7 +250,7 @@ var Bitop = function () {
     }, {
         key: "pureRightShift",
         value: function pureRightShift(n) {
-            if (n < 32) {
+            if (n === 0) {} else if (n < 32) {
                 this.p[1] = this.p[1] >>> n | this.p[0] << 32 - n;
                 this.p[0] = this.p[0] >>> n;
             } else {
@@ -410,6 +410,47 @@ exports.default = Bitop;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var ComputerPlayer = function () {
+    function ComputerPlayer() {
+        _classCallCheck(this, ComputerPlayer);
+
+        this.isComputer = true;
+    }
+
+    _createClass(ComputerPlayer, [{
+        key: "startTurn",
+        value: function startTurn(board, callback) {
+
+            setTimeout(this.computeMove.bind(this, board, callback), 0);
+        }
+    }, {
+        key: "computeMove",
+        value: function computeMove(board, callback) {
+
+            throw new Error("You need to override 'compute' method");
+        }
+    }]);
+
+    return ComputerPlayer;
+}();
+
+exports.default = ComputerPlayer;
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 exports.BB_SQUARES = exports.BB_VOID = undefined;
 
 var _Bitop = __webpack_require__(1);
@@ -429,7 +470,7 @@ for (var isquare = 0; isquare <= _constants.Squares.h8; isquare++) {
 };
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -451,7 +492,7 @@ var _Move2 = _interopRequireDefault(_Move);
 
 var _constants = __webpack_require__(0);
 
-var _Data = __webpack_require__(2);
+var _Data = __webpack_require__(3);
 
 var Data = _interopRequireWildcard(_Data);
 
@@ -570,9 +611,9 @@ var Board = function () {
 
             var move = this.playedMoves.pop();
 
-            if (move.square !== _constants.Pass) {
+            if (move.place !== _constants.Pass) {
 
-                this.bitboard[move.color].xor(Data.BB_SQUARES[move.square]);
+                this.bitboard[move.color].xor(Data.BB_SQUARES[move.place]);
                 this.bitboard[_constants.Black].xor(move.bbflip);
                 this.bitboard[_constants.White].xor(move.bbflip);
             }
@@ -716,7 +757,11 @@ var Board = function () {
                 fliped.or(outflank);
 
                 mask = masks2[i];
+
+                console.log(mask.p[0].toString(16));
                 mask.pureLeftShift(63 - square);
+
+                console.log(mask.p[0].toString(16));
 
                 outflank.copy(o);
                 if (i) {
@@ -766,7 +811,7 @@ var Board = function () {
 exports.default = Board;
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -825,47 +870,6 @@ var HumanPlayer = function () {
 exports.default = HumanPlayer;
 
 /***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var ComputerPlayer = function () {
-    function ComputerPlayer() {
-        _classCallCheck(this, ComputerPlayer);
-
-        this.isComputer = true;
-    }
-
-    _createClass(ComputerPlayer, [{
-        key: "startTurn",
-        value: function startTurn(board, callback) {
-
-            setTimeout(this.computeMove, 0, board, callback);
-        }
-    }, {
-        key: "compute",
-        value: function compute(board, callback) {
-
-            throw new Error("Override 'compute' method");
-        }
-    }]);
-
-    return ComputerPlayer;
-}();
-
-exports.default = ComputerPlayer;
-
-/***/ }),
 /* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -882,7 +886,7 @@ module.exports = __webpack_require__(7);
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Board = exports.RandomComputerPlayer = exports.ComputerPlayer = exports.HumanPlayer = exports.Game = undefined;
+exports.Board = exports.AlphaBetaPlayer = exports.RandomPlayer = exports.ComputerPlayer = exports.HumanPlayer = exports.Game = undefined;
 
 var _constants = __webpack_require__(0);
 
@@ -896,7 +900,7 @@ Object.keys(_constants).forEach(function (key) {
   });
 });
 
-var _Data = __webpack_require__(2);
+var _Data = __webpack_require__(3);
 
 Object.keys(_Data).forEach(function (key) {
   if (key === "default" || key === "__esModule") return;
@@ -912,19 +916,23 @@ var _ReversiGame = __webpack_require__(8);
 
 var _ReversiGame2 = _interopRequireDefault(_ReversiGame);
 
-var _HumanPlayer = __webpack_require__(4);
+var _HumanPlayer = __webpack_require__(5);
 
 var _HumanPlayer2 = _interopRequireDefault(_HumanPlayer);
 
-var _ComputerPlayer = __webpack_require__(5);
+var _ComputerPlayer = __webpack_require__(2);
 
 var _ComputerPlayer2 = _interopRequireDefault(_ComputerPlayer);
 
-var _RandomComputerPlayer = __webpack_require__(11);
+var _RandomPlayer = __webpack_require__(11);
 
-var _RandomComputerPlayer2 = _interopRequireDefault(_RandomComputerPlayer);
+var _RandomPlayer2 = _interopRequireDefault(_RandomPlayer);
 
-var _Board = __webpack_require__(3);
+var _AlphaBetaPlayer = __webpack_require__(12);
+
+var _AlphaBetaPlayer2 = _interopRequireDefault(_AlphaBetaPlayer);
+
+var _Board = __webpack_require__(4);
 
 var _Board2 = _interopRequireDefault(_Board);
 
@@ -933,7 +941,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 exports.Game = _ReversiGame2.default;
 exports.HumanPlayer = _HumanPlayer2.default;
 exports.ComputerPlayer = _ComputerPlayer2.default;
-exports.RandomComputerPlayer = _RandomComputerPlayer2.default;
+exports.RandomPlayer = _RandomPlayer2.default;
+exports.AlphaBetaPlayer = _AlphaBetaPlayer2.default;
 exports.Board = _Board2.default;
 
 /***/ }),
@@ -949,13 +958,13 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Board = __webpack_require__(3);
+var _Board = __webpack_require__(4);
 
 var _Board2 = _interopRequireDefault(_Board);
 
 var _constants = __webpack_require__(0);
 
-var _HumanPlayer = __webpack_require__(4);
+var _HumanPlayer = __webpack_require__(5);
 
 var _HumanPlayer2 = _interopRequireDefault(_HumanPlayer);
 
@@ -1049,7 +1058,8 @@ var Game = function (_EventDispatcher) {
 
             this.dispatchEvent({ type: 'undo', move: move });
 
-            this.players[this.board.turn].startTurn(this.board);
+            this.players[this.board.turn].startTurn(this.board, this._doMoveAndChangeTurn.bind(this));
+            this.dispatchEvent({ type: 'startTurn', color: this.board.turn, player: this.players[this.board.turn] });
         }
     }]);
 
@@ -1219,7 +1229,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _ComputerPlayer2 = __webpack_require__(5);
+var _ComputerPlayer2 = __webpack_require__(2);
 
 var _ComputerPlayer3 = _interopRequireDefault(_ComputerPlayer2);
 
@@ -1233,16 +1243,16 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var RandomComputerPlayer = function (_ComputerPlayer) {
-    _inherits(RandomComputerPlayer, _ComputerPlayer);
+var RandomPlayer = function (_ComputerPlayer) {
+    _inherits(RandomPlayer, _ComputerPlayer);
 
-    function RandomComputerPlayer() {
-        _classCallCheck(this, RandomComputerPlayer);
+    function RandomPlayer() {
+        _classCallCheck(this, RandomPlayer);
 
-        return _possibleConstructorReturn(this, (RandomComputerPlayer.__proto__ || Object.getPrototypeOf(RandomComputerPlayer)).call(this));
+        return _possibleConstructorReturn(this, (RandomPlayer.__proto__ || Object.getPrototypeOf(RandomPlayer)).call(this));
     }
 
-    _createClass(RandomComputerPlayer, [{
+    _createClass(RandomPlayer, [{
         key: 'computeMove',
         value: function computeMove(board, callback) {
 
@@ -1261,10 +1271,244 @@ var RandomComputerPlayer = function (_ComputerPlayer) {
         }
     }]);
 
-    return RandomComputerPlayer;
+    return RandomPlayer;
 }(_ComputerPlayer3.default);
 
-exports.default = RandomComputerPlayer;
+exports.default = RandomPlayer;
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _ComputerPlayer2 = __webpack_require__(2);
+
+var _ComputerPlayer3 = _interopRequireDefault(_ComputerPlayer2);
+
+var _constants = __webpack_require__(0);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var AlphaBetaPlayer = function (_ComputerPlayer) {
+    _inherits(AlphaBetaPlayer, _ComputerPlayer);
+
+    function AlphaBetaPlayer() {
+        _classCallCheck(this, AlphaBetaPlayer);
+
+        var _this = _possibleConstructorReturn(this, (AlphaBetaPlayer.__proto__ || Object.getPrototypeOf(AlphaBetaPlayer)).call(this));
+
+        _this.color;
+        return _this;
+    }
+
+    _createClass(AlphaBetaPlayer, [{
+        key: 'computeMove',
+        value: function computeMove(board, callback) {
+
+            this.color = board.turn;
+
+            var bestMove = _constants.Pass;
+            var bestScore = -Infinity;
+            var score = void 0;
+
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
+
+            try {
+                for (var _iterator = board.legalMoves[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var m = _step.value;
+
+
+                    board.pushMove(m);
+
+                    score = -this._alphaBetaEval(board, 3, -Infinity, Infinity);
+
+                    if (bestScore < score) {
+                        bestScore = score;
+                        bestMove = m;
+                    }
+
+                    board.popMove(m);
+                }
+            } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion && _iterator.return) {
+                        _iterator.return();
+                    }
+                } finally {
+                    if (_didIteratorError) {
+                        throw _iteratorError;
+                    }
+                }
+            }
+
+            callback(bestMove);
+        }
+    }, {
+        key: '_alphaBetaEval',
+        value: function _alphaBetaEval(board, depth, a, b) {
+
+            if (depth <= 0) {
+                return this._evalute(board, board.turn);
+            }
+
+            if (board.legalMoves.length === 0) {
+                board.pushMove(_constants.Pass);
+                a = -this._alphaBetaEval(board, depth - 1, -b, -a);
+                board.popMove();
+                return a;
+            }
+
+            var _iteratorNormalCompletion2 = true;
+            var _didIteratorError2 = false;
+            var _iteratorError2 = undefined;
+
+            try {
+                for (var _iterator2 = board.legalMoves[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                    var m = _step2.value;
+
+
+                    board.pushMove(m);
+                    a = Math.max(a, -this._alphaBetaEval(board, depth - 1, -b, -a));
+                    board.popMove();
+                    if (a >= b) return a;
+                }
+            } catch (err) {
+                _didIteratorError2 = true;
+                _iteratorError2 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                        _iterator2.return();
+                    }
+                } finally {
+                    if (_didIteratorError2) {
+                        throw _iteratorError2;
+                    }
+                }
+            }
+
+            return a;
+        }
+    }, {
+        key: '_evalute',
+        value: function _evalute(board, color) {
+
+            var LineScores = [0, 100, -50, 100, 10, 100, -50, 100];
+
+            var lineScore = 0;
+
+            var tb = board.bitboard[color].clone();
+
+            var first8Bit = tb.p[0] >>> 24;
+            var last8Bit = tb.p[1] & 255;
+
+            lineScore += calcLineScore(first8Bit);
+            lineScore += calcLineScore(last8Bit);
+
+            tb.rotate90();
+
+            first8Bit = tb.p[0] >>> 24;
+            last8Bit = tb.p[1] & 255;
+
+            lineScore += calcLineScore(first8Bit);
+            lineScore += calcLineScore(last8Bit);
+
+            tb.copy(board.bitboard[color ^ 1]);
+
+            first8Bit = tb.p[0] >>> 24;
+            last8Bit = tb.p[1] & 255;
+
+            lineScore -= calcLineScore(first8Bit);
+            lineScore -= calcLineScore(last8Bit);
+
+            tb.rotate90();
+
+            first8Bit = tb.p[0] >>> 24;
+            last8Bit = tb.p[1] & 255;
+
+            lineScore -= calcLineScore(first8Bit);
+            lineScore -= calcLineScore(last8Bit);
+
+            tb.copy(board.bitboard[color]);
+            tb.p[0] &= 0x80402010;
+            tb.p[1] &= 0x08040201;
+            first8Bit = (tb.p[0] | tb.p[1]) * 0x01010101 >>> 24;
+            lineScore += calcLineScore(first8Bit);
+
+            tb.copy(board.bitboard[color]);
+            tb.p[0] &= 0x01020408;
+            tb.p[1] &= 0x10204080;
+            first8Bit = (tb.p[0] | tb.p[1]) * 0x01010101 >>> 24;
+            lineScore += calcLineScore(first8Bit);
+
+            tb.copy(board.bitboard[color ^ 1]);
+            tb.p[0] &= 0x80402010;
+            tb.p[1] &= 0x08040201;
+            first8Bit = (tb.p[0] | tb.p[1]) * 0x01010101 >>> 24;
+            lineScore -= calcLineScore(first8Bit);
+
+            tb.copy(board.bitboard[color ^ 1]);
+            tb.p[0] &= 0x01020408;
+            tb.p[1] &= 0x10204080;
+            first8Bit = (tb.p[0] | tb.p[1]) * 0x01010101 >>> 24;
+            lineScore -= calcLineScore(first8Bit);
+
+            return lineScore;
+
+            function calcLineScore(row) {
+
+                var leftScore = LineScores[row & 7];
+                var rightScore = LineScores[rightToLeft(row >>> 5)];
+
+                return leftScore + rightScore;
+            }
+
+            function rightToLeft(bit) {
+
+                switch (bit) {
+                    case 0:
+                    case 2:
+                    case 5:
+                    case 7:
+                        return bit;
+                    case 1:
+                        return 4;
+                    case 3:
+                        return 6;
+                    case 4:
+                        return 1;
+                    case 6:
+                        return 3;
+                    default:
+                        throw new Error();
+                }
+            }
+        }
+    }]);
+
+    return AlphaBetaPlayer;
+}(_ComputerPlayer3.default);
+
+exports.default = AlphaBetaPlayer;
 
 /***/ })
 /******/ ]);

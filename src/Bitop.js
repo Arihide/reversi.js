@@ -111,10 +111,10 @@ export default class Bitop {
     }
 
     pureLeftShift(n) {
-        if (n < 32) {
+        if (n > 0 && n < 32) {
             this.p[0] = (this.p[0] << n) | (this.p[1] >>> (32 - n));
             this.p[1] = this.p[1] << n;
-        } else {
+        } else if (n > 0 && n < 64) {
             this.p[0] = this.p[1] << (n - 32);
             this.p[1] = 0;
         }
@@ -122,10 +122,11 @@ export default class Bitop {
     }
 
     pureRightShift(n) {
-        if (n < 32) {
+
+        if (n > 0 && n < 32) {
             this.p[1] = (this.p[1] >>> n) | (this.p[0] << (32 - n));
             this.p[0] = this.p[0] >>> n;
-        } else {
+        } else if (n > 0 && n < 64) {
             this.p[1] = this.p[0] >>> (n - 32);
             this.p[0] = 0;
         }

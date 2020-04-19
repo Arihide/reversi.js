@@ -8,17 +8,18 @@
     "test": "test"
   },
   "scripts": {
-    "build": "webpack",
-    "test": "mocha --require babel-core/register"
+    "build": "webpack --mode production",
+    "test": "mocha --require esm"
   },
   "author": "Arihide Takahashi",
   "license": "MIT",
   "repository": "github:Arihide/reversi.js",
   "devDependencies": {
-    "@babel/core": "^7.0.0-beta.35",
-    "@babel/preset-env": "^7.0.0-beta.35",
-    "babel-loader": "^7.1.2",
-    "mocha": "^4.0.1",
-    "webpack": "^3.10.0"
+    "@babel/core": "^7.9.0",
+    "babel-loader": "^8.1.0",
+    "esm": "^3.2.25",
+    "mocha": "^7.1.1",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11"
   }
 }

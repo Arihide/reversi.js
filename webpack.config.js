@@ -3,7 +3,6 @@ const path = require('path');
 const srcPath = __dirname;
 const distPath = path.join(__dirname, 'build');
 const exclude = [/node_modules/];
-const CleanPlugin = require('clean-webpack-plugin');
 
 module.exports = {
     context: srcPath,
@@ -17,21 +16,6 @@ module.exports = {
     },
     plugins: [
 
-        new CleanPlugin(['dist']),
-
-        // new webpack.optimize.UglifyJsPlugin({
-        //     mangle: true,
-        //     compress: {
-        //         sequences: true,
-        //         dead_code: true,
-        //         conditionals: true,
-        //         booleans: true,
-        //         unused: true,
-        //         if_return: true,
-        //         join_vars: true,
-        //     }
-        // })
-
     ],
     module: {
         noParse: [/app\/bin/],
@@ -43,9 +27,6 @@ module.exports = {
                 query: {
                     comments: false,
                     compact: false,
-                    presets: [
-                        "env"
-                    ]
                 }
             }
         ]

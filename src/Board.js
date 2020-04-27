@@ -6,9 +6,11 @@ import * as Data from './Data';
 
 
 export default class Board {
+
     constructor() {
+        
         this.initialBoard = [];
-        this.bitboard = [];
+        this.bitboard = [new Bitop(), new Bitop()];
         this._legalMoves = null;
 
         this.initialize();
@@ -21,8 +23,9 @@ export default class Board {
         this.initialBoard[White] = whiteDiscs;
 
         this.playedMoves = [];
-        this.bitboard[Black] = new Bitop();
-        this.bitboard[White] = new Bitop();
+
+        this.bitboard[Black].set(0, 0);
+        this.bitboard[White].set(0, 0);
 
         for (let disc of blackDiscs) {
             this.bitboard[Black].xor(Data.BB_SQUARES[disc]);

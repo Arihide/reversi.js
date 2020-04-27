@@ -30,6 +30,11 @@ export default class Bitop {
         return this;
     }
 
+    set(p0, p1) {
+        this.p[0] = p0;
+        this.p[1] = p1;
+    }
+
     addOne() {
         this.p[1]++;
 

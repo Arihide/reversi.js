@@ -35,6 +35,8 @@ export default class Board {
             this.bitboard[White].xor(Data.BB_SQUARES[disc]);
         }
 
+        this._legalMoves = null
+
     }
 
     get legalMoves() {

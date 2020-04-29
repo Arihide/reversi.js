@@ -5,6 +5,24 @@ import assert from 'assert'
 
 describe('board test', () => {
 
+    it('initialize', () => {
+        let b = new Board()
+
+        b.initialize()
+        assert.deepStrictEqual(b.legalMoves, [S.d3, S.c4, S.f5, S.e6])
+
+        b.pushMove(S.f5); b.pushMove(S.f6)
+        b.pushMove(S.e6); b.pushMove(S.f4)
+        b.pushMove(S.e3); b.pushMove(S.d2)
+        b.pushMove(S.d3); b.pushMove(S.d6)
+        b.pushMove(S.c4); b.pushMove(S.b4)
+
+        assert.deepEqual(b.legalMoves.length, 0)
+
+        b.initialize()
+        assert.deepStrictEqual(b.legalMoves, [S.d3, S.c4, S.f5, S.e6])
+    })
+
     it('flip', () => {
         let b = new Board();
         b.initialize([S.b2, S.c3, S.d4, S.e5, S.f6, S.g7], [S.a1]);

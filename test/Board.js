@@ -36,8 +36,6 @@ describe('board test', () => {
         b.turn = 1;
         flip = b.flip(S.a2);
 
-        console.log(flip.p[0].toString(16));
-
         assert.equal(flip.p[0], 0x00784000);
         assert.equal(flip.p[1], 0);
     });

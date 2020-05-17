@@ -9,7 +9,8 @@
   },
   "scripts": {
     "build": "webpack --mode production",
-    "test": "mocha --require esm"
+    "test": "mocha --require esm",
+    "test2": "mocha --require esm --file ./test2/*.js --timeout 100000"
   },
   "author": "Arihide Takahashi",
   "license": "MIT",

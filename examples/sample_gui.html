@@ -81,6 +81,7 @@
 
         var game = new Reversi.Game();
         var player = new Reversi.HumanPlayer();
+        var cpu = new Reversi.AlphaBetaPlayer();
 
         addEventListener('DOMContentLoaded', startGame);
 
@@ -154,7 +155,7 @@
 
             });
 
-            game.startGame(player, new Reversi.AlphaBetaPlayer());
+            game.startGame(cpu, cpu);
 
         }
 

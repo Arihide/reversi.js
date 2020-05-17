@@ -1,6 +1,7 @@
 import Bitop from '../src/Bitop';
 
 import assert from 'assert'
+import { Squares } from '../src/constants';
 
 describe('bit test', () => {
     it('last bit', () => {
@@ -21,13 +22,13 @@ describe('bit test', () => {
 
     });
 
-    it('num of 1', ()=>{
+    it('num of 1', () => {
 
         let b = new Bitop(0b000101000101010100101010010110, 0b111010011111010111);
         let num = b.numOfOne()
 
         assert.equal(num, 25);
-        
+
     });
 
     it('delta swap', () => {
@@ -98,4 +99,58 @@ describe('bit test', () => {
         b.p[0] = 0x00040000;
 
     });
+
+    it('bit scan', () => {
+
+        let b = new Bitop(0xffffffff, 0xffffffff)
+
+        for (let i = 0; i < 64; i++) {
+            let s = Bitop.bitScan(b, i)
+            assert.equal(s, i)
+        }
+
+        {
+            let squares = []
+            let s = Bitop.bitScan(b)
+            while(s !== -1){
+                squares.push(s)
+                s = Bitop.bitScan(b, s + 1)
+            }
+            assert.deepStrictEqual(squares, Object.values(Squares))
+        }
+
+        b = new Bitop()
+        for (let i = 0; i < 64; i++) {
+            let s = Bitop.bitScan(b, i)
+            assert.equal(s, -1)
+        }
+
+        {
+            let squares = []
+            let s = Bitop.bitScan(b)
+            while(s !== -1){
+                squares.push(s)
+                s = Bitop.bitScan(b, s + 1)
+            }
+            assert.deepStrictEqual(squares, [])
+        }
+
+        b = new Bitop(0x55555555, 0x55555555)
+        for (let i = 0; i < 64; i++) {
+            let s = Bitop.bitScan(b, i)
+            assert.equal(s, i % 2 == 0 ? i + 1 : i)
+        }
+
+        {
+            let squares = []
+            let s = Bitop.bitScan(b)
+            while(s !== -1){
+                squares.push(s)
+                s = Bitop.bitScan(b, s + 1)
+            }
+            assert.deepStrictEqual(squares, Object.values(Squares).filter(_s => _s % 2 == 1))
+        }
+
+    })
+
 });

@@ -1,3 +1,11 @@
+
+const __pos = [
+    0, 9, 1, 10, 13, 21, 2, 29,
+    11, 14, 16, 18, 22, 25, 3, 30,
+    8, 12, 20, 28, 15, 17, 24, 7,
+    19, 27, 23, 6, 26, 5, 4, 31
+]
+
 export default class Bitop {
     constructor(p0 = 0, p1 = 0) {
         this.buf = new ArrayBuffer(8)
@@ -255,21 +263,51 @@ export default class Bitop {
         return bb;
     }
 
+
+    // Sean Eron Anderson, Bit Twiddling Hacks
+    // Find the log base 2 of an N-bit integer in O(lg(N)) operations with multiply and lookup
+    // https://graphics.stanford.edu/~seander/bithacks.html#IntegerLogDeBruijn
     static bitScan(b, n = 0) {
-        if (b.p[0] != 0 && n < 32) {
-            let sb = b.p[0].toString(2);
-            let r = sb.indexOf("1", sb.length + n - 32)
-            if (r != -1) {
-                return 32 - sb.length + r;
+
+        let c = b.p[0]
+
+        if (n < 32) {
+
+            c = c << n
+            c = c >>> n
+
+            if (c != 0) {
+
+                c |= c >>> 1
+                c |= c >>> 2
+                c |= c >>> 4
+                c |= c >>> 8
+                c |= c >>> 16
+
+                let position = __pos[c * 0x07C4ACDD >>> 27]
+                return (31 - position)
             }
+
         }
-        if (b.p[1] != 0 && n < 64) {
-            let sb = b.p[1].toString(2);
-            let r = sb.indexOf("1", sb.length + n - 64)
-            if (r != -1) {
-                return 64 - sb.length + r;
-            }
+
+        c = b.p[1]
+        c = c << (n < 32 ? 0 : (n - 32))
+        c = c >>> (n < 32 ? 0 : (n - 32))
+
+        if (c != 0 && n < 64) {
+
+            c |= c >>> 1
+            c |= c >>> 2
+            c |= c >>> 4
+            c |= c >>> 8
+            c |= c >>> 16
+
+            let position = __pos[c * 0x07C4ACDD >>> 27]
+
+            return (31 - position) + 32
         }
-        return -1;
+
+        return -1
+
     }
 }

@@ -19,7 +19,7 @@
     "@babel/core": "^7.9.0",
     "babel-loader": "^8.1.0",
     "esm": "^3.2.25",
-    "mocha": "^7.1.1",
+    "mocha": "^10.2.0",
     "webpack": "^4.42.1",
     "webpack-cli": "^3.3.11"
   }
